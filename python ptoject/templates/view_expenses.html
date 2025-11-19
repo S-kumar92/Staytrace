@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}View Expenses - Travel Expense Manager{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">📊 All Expenses</h1>
+    </div>
+</div>
+
+{% if trips %}
+    {% for trip in trips %}
+    <div class="card mb-4">
+        <div class="card-header {% if trip_totals[trip.trip_name].is_over_budget %}bg-danger text-white{% else %}bg-info text-white{% endif %}">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h4 class="mb-0">{{ trip.trip_name }}</h4>
+                    <small>{{ trip.destination }} | {{ trip.travel_mode }}</small>
+                </div>
+                <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                    <div>
+                        <strong>Budget:</strong> ${{ "{:,.2f}".format(trip_totals[trip.trip_name].budget) }} | 
+                        <strong>Spent:</strong> ${{ "{:,.2f}".format(trip_totals[trip.trip_name].total_spent) }} | 
+                        <strong>Remaining:</strong> 
+                        <span class="{% if trip_totals[trip.trip_name].is_over_budget %}text-warning fw-bold{% else %}text-white{% endif %}">
+                            ${{ "{:,.2f}".format(trip_totals[trip.trip_name].remaining) }}
+                        </span>
+                    </div>
+                    {% if trip_totals[trip.trip_name].is_over_budget %}
+                    <div class="mt-1">
+                        <span class="badge bg-warning text-dark">⚠️ Over Budget!</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if trip.trip_name in trip_expenses and trip_expenses[trip.trip_name] %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Note</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for expense in trip_expenses[trip.trip_name] %}
+                        <tr>
+                            <td>{{ expense.date }}</td>
+                            <td>
+                                <span class="badge bg-secondary">{{ expense.category }}</span>
+                            </td>
+                            <td class="fw-bold">${{ "{:,.2f}".format(expense.amount) }}</td>
+                            <td>{{ expense.note or '-' }}</td>
+                            <td>
+                                <a href="{{ url_for('edit_expense', expense_id=expense.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="{{ url_for('delete_expense', expense_id=expense.id) }}" 
+                                   class="btn btn-sm btn-danger" 
+                                   onclick="return confirm('Are you sure you want to delete this expense?')">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-info">
+                            <td colspan="2"><strong>Total for {{ trip.trip_name }}:</strong></td>
+                            <td class="fw-bold">${{ "{:,.2f}".format(trip_totals[trip.trip_name].total_spent) }}</td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No expenses recorded for this trip yet.</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">No trips found!</h4>
+        <p>Please add a trip first before viewing expenses.</p>
+        <hr>
+        <a href="{{ url_for('add_trip') }}" class="btn btn-primary">Add Trip</a>
+    </div>
+{% endif %}
+
+{% if not trip_expenses or trip_expenses|length == 0 %}
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">No expenses yet!</h4>
+        <p>Start tracking your expenses by adding your first expense.</p>
+        <hr>
+        <a href="{{ url_for('add_expense') }}" class="btn btn-success">Add Expense</a>
+    </div>
+{% endif %}
+{% endblock %}
+

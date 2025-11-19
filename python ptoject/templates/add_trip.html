@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Add Trip - Travel Expense Manager{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0">➕ Add New Trip</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('save_trip') }}">
+                    <div class="mb-3">
+                        <label for="trip_name" class="form-label">Trip Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="trip_name" name="trip_name" required>
+                        <small class="form-text text-muted">e.g., Summer Vacation 2024</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="destination" class="form-label">Destination <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="destination" name="destination" required>
+                        <small class="form-text text-muted">e.g., Paris, France</small>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="start_date" class="form-label">Start Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" required>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="end_date" class="form-label">End Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="budget" class="form-label">Budget ($) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="budget" name="budget" step="0.01" min="0" required>
+                        <small class="form-text text-muted">Enter your total budget for this trip</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="travel_mode" class="form-label">Travel Mode <span class="text-danger">*</span></label>
+                        <select class="form-select" id="travel_mode" name="travel_mode" required>
+                            <option value="">Select Travel Mode</option>
+                            <option value="Bus">Bus</option>
+                            <option value="Train">Train</option>
+                            <option value="Flight">Flight</option>
+                            <option value="Car">Car</option>
+                            <option value="Bike">Bike</option>
+                            <option value="Ship">Ship</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('home') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Trip</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

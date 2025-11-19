@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Expense - Travel Expense Manager{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h3 class="card-title mb-0">✏️ Edit Expense</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('update_expense', expense_id=expense.id) }}">
+                    <div class="mb-3">
+                        <label for="trip_name" class="form-label">Trip Name <span class="text-danger">*</span></label>
+                        <select class="form-select" id="trip_name" name="trip_name" required>
+                            <option value="">Select a Trip</option>
+                            {% for trip in trips %}
+                            <option value="{{ trip.trip_name }}" {% if trip.trip_name == expense.trip_name %}selected{% endif %}>
+                                {{ trip.trip_name }} - {{ trip.destination }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Food" {% if expense.category == 'Food' %}selected{% endif %}>Food</option>
+                            <option value="Travel" {% if expense.category == 'Travel' %}selected{% endif %}>Travel</option>
+                            <option value="Stay" {% if expense.category == 'Stay' %}selected{% endif %}>Stay</option>
+                            <option value="Shopping" {% if expense.category == 'Shopping' %}selected{% endif %}>Shopping</option>
+                            <option value="Others" {% if expense.category == 'Others' %}selected{% endif %}>Others</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount ($) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="amount" name="amount" step="0.01" min="0" 
+                               value="{{ expense.amount }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="date" name="date" value="{{ expense.date }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="note" class="form-label">Note</label>
+                        <textarea class="form-control" id="note" name="note" rows="3" 
+                                  placeholder="Optional: Add any additional notes about this expense">{{ expense.note or '' }}</textarea>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('view_expenses') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-warning">Update Expense</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

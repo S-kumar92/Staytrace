@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Travel Expense Manager{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">🏖️ My Trips</h1>
+    </div>
+</div>
+
+{% if trip_summaries %}
+    <div class="row">
+        {% for summary in trip_summaries %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 {% if summary.is_over_budget %}border-danger{% endif %}">
+                <div class="card-header {% if summary.is_over_budget %}bg-danger text-white{% else %}bg-primary text-white{% endif %}">
+                    <h5 class="card-title mb-0">{{ summary.trip.trip_name }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <strong>📍 Destination:</strong> {{ summary.trip.destination }}<br>
+                        <strong>🚗 Mode:</strong> {{ summary.trip.travel_mode }}<br>
+                        <strong>📅 Dates:</strong> {{ summary.trip.start_date }} to {{ summary.trip.end_date }}
+                    </p>
+                    <hr>
+                    <div class="budget-info">
+                        <p class="mb-1">
+                            <strong>Budget:</strong> 
+                            <span class="text-primary">${{ "{:,.2f}".format(summary.budget) }}</span>
+                        </p>
+                        <p class="mb-1">
+                            <strong>Total Spent:</strong> 
+                            <span class="text-info">${{ "{:,.2f}".format(summary.total_spent) }}</span>
+                        </p>
+                        <p class="mb-0">
+                            <strong>Remaining:</strong> 
+                            <span class="{% if summary.is_over_budget %}text-danger fw-bold{% else %}text-success{% endif %}">
+                                ${{ "{:,.2f}".format(summary.remaining) }}
+                            </span>
+                        </p>
+                        {% if summary.is_over_budget %}
+                        <div class="alert alert-danger mt-2 mb-0 py-2" role="alert">
+                            <small>⚠️ Over Budget!</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">No trips yet!</h4>
+        <p>Start by adding your first trip to track your travel expenses.</p>
+        <hr>
+        <a href="{{ url_for('add_trip') }}" class="btn btn-primary">Add Your First Trip</a>
+    </div>
+{% endif %}
+{% endblock %}
+
